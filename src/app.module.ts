@@ -7,9 +7,8 @@ import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-
 import { ClassModule } from './class/class.module';
-import { StudentController } from './student/student.controller';
+import { StudentModule } from './student/student.module';
 
 @Module({
   imports: [
@@ -20,8 +19,9 @@ import { StudentController } from './student/student.controller';
       isGlobal: true, // makes env vars available everywhere
     }),
     ClassModule,
+    StudentModule,
   ],
-  controllers: [AppController, AuthController, UserController, StudentController],
+  controllers: [AppController, AuthController, UserController],
   providers: [AppService],
 })
 export class AppModule {}

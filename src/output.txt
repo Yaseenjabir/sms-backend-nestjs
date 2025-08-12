@@ -1,0 +1,164 @@
+
+// D:\Full Stack SMS Panel\sms-backend-nest\src\student\dto\createStudent.dto.ts
+import {
+  IsString,
+  IsNumber,
+  IsNotEmpty,
+  IsEnum,
+  Min,
+  Max,
+} from 'class-validator';
+import { Section } from 'src/class/schema/class.schema';
+
+export class CreateStudentDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsNumber()
+  @Min(3)
+  @Max(20)
+  age: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  rollNo: number;
+
+  @IsNumber()
+  @Min(1)
+  @Max(12)
+  grade: number;
+
+  @IsEnum(Section, { message: 'Section must be a valid value' })
+  section: Section;
+}
+
+// D:\Full Stack SMS Panel\sms-backend-nest\src\student\schema\student.schema.ts
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import { Section } from 'src/class/schema/class.schema';
+
+@Schema({ timestamps: true })
+export class Student extends Document {
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true })
+  age: number;
+
+  @Prop({ required: true })
+  rollNo: number;
+
+  @Prop({ required: true })
+  grade: number;
+
+  @Prop({ required: true })
+  section: Section;
+}
+
+export const StudentSchema = SchemaFactory.createForClass(Student);
+export type StudentDocument = Student & Document;
+
+// D:\Full Stack SMS Panel\sms-backend-nest\src\student\student.controller.spec.ts
+import { Test, TestingModule } from '@nestjs/testing';
+import { StudentController } from './student.controller';
+
+describe('StudentController', () => {
+  let controller: StudentController;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [StudentController],
+    }).compile();
+
+    controller = module.get<StudentController>(StudentController);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+});
+
+// D:\Full Stack SMS Panel\sms-backend-nest\src\student\student.controller.ts
+import { Body, Controller, Post } from '@nestjs/common';
+import { StudentService } from './student.service';
+
+@Controller('student')
+export class StudentController {
+  constructor(private readonly studentService: StudentService) {}
+
+  @Post('create')
+  async function(@Body() body) {
+    await this.studentService.create(body);
+    return 'Hello world';
+  }
+}
+
+// D:\Full Stack SMS Panel\sms-backend-nest\src\student\student.module.ts
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { StudentService } from './student.service';
+import { StudentController } from './student.controller';
+import { Student, StudentSchema } from './schema/student.schema';
+
+@Module({
+  imports: [
+    MongooseModule.forFeature([{ name: Student.name, schema: StudentSchema }]),
+  ],
+  controllers: [StudentController],
+  providers: [StudentService],
+})
+export class StudentModule {}
+
+// D:\Full Stack SMS Panel\sms-backend-nest\src\student\student.service.spec.ts
+import { Test, TestingModule } from '@nestjs/testing';
+import { StudentService } from './student.service';
+
+describe('StudentService', () => {
+  let service: StudentService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [StudentService],
+    }).compile();
+
+    service = module.get<StudentService>(StudentService);
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+});
+
+// D:\Full Stack SMS Panel\sms-backend-nest\src\student\student.service.ts
+import { ConflictException, Injectable } from '@nestjs/common';
+import { CreateStudentDto } from './dto/createStudent.dto';
+import { Student } from './schema/student.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
+@Injectable()
+export class StudentService {
+  constructor(
+    @InjectModel(Student.name) private studentModel: Model<Student>,
+  ) {}
+
+  async create(dto: CreateStudentDto): Promise<Student> {
+    console.log(dto);
+    const existing = await this.studentModel.findOne({
+      grade: dto.grade,
+      section: dto.section,
+      rollNo: dto.rollNo,
+    });
+
+    if (existing) {
+      throw new ConflictException(
+        `A student with roll number ${dto.rollNo} already exists in Grade ${dto.grade} Section ${dto.section}`,
+      );
+    }
+
+    // Create new student
+    const student = new this.studentModel(dto);
+    return student.save();
+  }
+}
