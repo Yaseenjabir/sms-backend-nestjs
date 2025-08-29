@@ -15,7 +15,13 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // strips properties that are not in DTO
+      forbidNonWhitelisted: true, // throws error if extra properties sent
+      transform: true, // transforms plain objects into DTO class instances
+    }),
+  );
   app.useGlobalFilters(new AllExceptionsFilter());
   app.use(cookieParser()); // <- important!
   await app.listen(process.env.PORT ?? 3000);

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ClassService } from './class.service';
 import { CreateClassDto } from './dto/createClass.dto';
 
@@ -14,5 +14,12 @@ export class ClassController {
       data,
       message: 'Class created successfully',
     };
+  }
+
+  @Get('getAll')
+  async getAll() {
+    const data = await this.classService.getAllClasses();
+
+    return data;
   }
 }

@@ -46,4 +46,13 @@ export class ClassService {
     // Create the class
     return await new this.classModel(data).save();
   }
+
+  async getAllClasses() {
+    let data = await this.classModel.find();
+
+    return {
+      data,
+      message: data.length ? undefined : 'No classes available',
+    };
+  }
 }

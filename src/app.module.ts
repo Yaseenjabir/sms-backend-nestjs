@@ -9,6 +9,9 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ClassModule } from './class/class.module';
 import { StudentModule } from './student/student.module';
+import { TeacherController } from './teacher/teacher.controller';
+import { TeacherModule } from './teacher/teacher.module';
+import { ExamController } from './exam/exam.controller';
 
 @Module({
   imports: [
@@ -20,8 +23,15 @@ import { StudentModule } from './student/student.module';
     }),
     ClassModule,
     StudentModule,
+    TeacherModule,
   ],
-  controllers: [AppController, AuthController, UserController],
+  controllers: [
+    AppController,
+    AuthController,
+    UserController,
+    TeacherController,
+    ExamController,
+  ],
   providers: [AppService],
 })
 export class AppModule {}
