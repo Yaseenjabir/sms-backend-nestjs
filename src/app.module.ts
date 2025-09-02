@@ -12,6 +12,9 @@ import { StudentModule } from './student/student.module';
 import { TeacherController } from './teacher/teacher.controller';
 import { TeacherModule } from './teacher/teacher.module';
 import { ExamController } from './exam/exam.controller';
+import { ExamModule } from './exam/exam.module';
+import { AnnouncementController } from './announcement/announcement.controller';
+import { AnnouncementModule } from './announcement/announcement.module';
 
 @Module({
   imports: [
@@ -24,6 +27,8 @@ import { ExamController } from './exam/exam.controller';
     ClassModule,
     StudentModule,
     TeacherModule,
+    ExamModule,
+    AnnouncementModule,
   ],
   controllers: [
     AppController,
@@ -31,6 +36,7 @@ import { ExamController } from './exam/exam.controller';
     UserController,
     TeacherController,
     ExamController,
+    AnnouncementController,
   ],
   providers: [AppService],
 })
