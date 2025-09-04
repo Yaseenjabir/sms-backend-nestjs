@@ -19,7 +19,13 @@ export class ClassController {
   @Get('getAll')
   async getAll() {
     const data = await this.classService.getAllClasses();
-
     return data;
+  }
+
+  @Get('getAllDropDown')
+  async getAllDropDowns() {
+    const dropDowns = await this.classService.getAllDropDowns();
+
+    return dropDowns;
   }
 }

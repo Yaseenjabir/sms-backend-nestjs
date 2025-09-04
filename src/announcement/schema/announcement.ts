@@ -14,8 +14,11 @@ export class Announcement {
   @Prop({ required: true, enum: ['parent', 'teacher', 'student', 'all'] })
   to_whom: string;
 
-  @Prop()
-  date_sheet_image?: string;
+  @Prop({ required: true, enum: ['low', 'medium', 'high'], default: 'medium' })
+  priority: string;
+
+  @Prop({ default: true })
+  is_active: boolean;
 
   @Prop()
   createdAt: Date;

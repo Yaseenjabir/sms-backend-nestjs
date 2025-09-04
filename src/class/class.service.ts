@@ -55,4 +55,10 @@ export class ClassService {
       message: data.length ? undefined : 'No classes available',
     };
   }
+
+  async getAllDropDowns() {
+    let dropDowns = await this.classModel.find().select('section grade');
+
+    return dropDowns;
+  }
 }

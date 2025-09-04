@@ -1,4 +1,4 @@
-import { IsString, IsIn } from 'class-validator';
+import { IsString, IsIn, IsBoolean } from 'class-validator';
 
 export class CreateAnnouncementDto {
   @IsString()
@@ -9,4 +9,10 @@ export class CreateAnnouncementDto {
 
   @IsIn(['parent', 'teacher', 'student', 'all'])
   to_whom: string;
+
+  @IsIn(['low', 'medium', 'high'])
+  priority: string;
+
+  @IsBoolean()
+  is_active: boolean;
 }
