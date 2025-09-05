@@ -1,8 +1,12 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateStudentDto } from './dto/createStudent.dto';
 import { Student } from './schema/student.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 @Injectable()
 export class StudentService {
@@ -11,7 +15,6 @@ export class StudentService {
   ) {}
 
   async create(dto: CreateStudentDto): Promise<Student> {
-    console.log(dto);
     const existing = await this.studentModel.findOne({
       grade: dto.grade,
       section: dto.section,
@@ -24,8 +27,22 @@ export class StudentService {
       );
     }
 
-    // Create new student
-    const student = new this.studentModel(dto);
+    // Cast class id to ObjectId
+    const student = new this.studentModel({
+      ...dto,
+      class: new Types.ObjectId(dto.class),
+    });
+
     return student.save();
+  }
+
+  async getAllStudents() {
+    const students = await this.studentModel.find();
+
+    if (students.length < 1) {
+      throw new NotFoundException('No students found');
+    }
+
+    return students;
   }
 }

@@ -1,7 +1,7 @@
 // student.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Class, Section } from 'src/class/schema/class.schema';
+import { Section } from 'src/class/schema/class.schema';
 
 export type StudentDocument = Student & Document;
 
@@ -39,8 +39,8 @@ export class Student {
   @Prop({ required: true })
   admissionDate: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Class', required: true })
-  class: Class;
+  @Prop({ type: Types.ObjectId, ref: 'classes', required: true })
+  class: Types.ObjectId;
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);

@@ -48,7 +48,20 @@ export class ClassService {
   }
 
   async getAllClasses() {
-    let data = await this.classModel.find();
+    const data = await this.classModel.aggregate([
+      {
+        $lookup: {
+          from: 'students', // <-- must match MongoDB collection name
+          localField: '_id',
+          foreignField: 'class',
+          as: 'students',
+        },
+      },
+      {
+        $addFields: { studentCount: { $size: '$students' } },
+      },
+      { $project: { students: 0 } },
+    ]);
 
     return {
       data,
