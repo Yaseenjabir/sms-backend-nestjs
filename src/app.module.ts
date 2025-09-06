@@ -15,6 +15,8 @@ import { ExamController } from './exam/exam.controller';
 import { ExamModule } from './exam/exam.module';
 import { AnnouncementController } from './announcement/announcement.controller';
 import { AnnouncementModule } from './announcement/announcement.module';
+import { FeeController } from './fee/fee.controller';
+import { FeeModule } from './fee/fee.module';
 
 @Module({
   imports: [
@@ -29,6 +31,7 @@ import { AnnouncementModule } from './announcement/announcement.module';
     TeacherModule,
     ExamModule,
     AnnouncementModule,
+    FeeModule,
   ],
   controllers: [
     AppController,
@@ -37,6 +40,7 @@ import { AnnouncementModule } from './announcement/announcement.module';
     TeacherController,
     ExamController,
     AnnouncementController,
+    FeeController,
   ],
   providers: [AppService],
 })

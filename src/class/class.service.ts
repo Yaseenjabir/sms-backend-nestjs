@@ -51,7 +51,7 @@ export class ClassService {
     const data = await this.classModel.aggregate([
       {
         $lookup: {
-          from: 'students', // <-- must match MongoDB collection name
+          from: 'students',
           localField: '_id',
           foreignField: 'class',
           as: 'students',
@@ -61,6 +61,19 @@ export class ClassService {
         $addFields: { studentCount: { $size: '$students' } },
       },
       { $project: { students: 0 } },
+      {
+        $lookup: {
+          from: 'feestructures',
+          localField: '_id',
+          foreignField: 'class',
+          as: 'feeStructure',
+        },
+      },
+      {
+        $addFields: {
+          feeStructure: { $arrayElemAt: ['$feeStructure', 0] },
+        },
+      },
     ]);
 
     return {
